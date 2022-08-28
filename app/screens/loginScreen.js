@@ -6,16 +6,16 @@ import {
 	SafeAreaView,
 	StyleSheet,
 	TextInput,
-} from 'react-native';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+} from "react-native";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-import { APP_SERVER_URL } from '@env';
+import { APP_SERVER_URL } from "@env";
 
 export default ({ navigation }) => {
 	const initialFormData = {
-		username: '',
-		password: '',
+		username: "",
+		password: "",
 	};
 
 	const [formData, setFormData] = useState(initialFormData);
@@ -43,7 +43,7 @@ export default ({ navigation }) => {
 				source={{
 					width: 200,
 					height: 200,
-					uri: 'http://192.168.0.109:5000/images/logo.png',
+					uri: `${APP_SERVER_URL}/images/logo.png`,
 				}}
 			/>
 			<View style={styles.title}>
@@ -53,7 +53,7 @@ export default ({ navigation }) => {
 				<TextInput
 					placeholder="Username"
 					autoCapitalize="none"
-					onChangeText={(value) => handleChangeInput('username', value)}
+					onChangeText={(value) => handleChangeInput("username", value)}
 					value={formData.username}
 				/>
 			</View>
@@ -62,7 +62,7 @@ export default ({ navigation }) => {
 					placeholder="Password"
 					secureTextEntry={true}
 					autoCapitalize="none"
-					onChangeText={(value) => handleChangeInput('password', value)}
+					onChangeText={(value) => handleChangeInput("password", value)}
 					value={formData.password}
 				/>
 			</View>
@@ -71,7 +71,7 @@ export default ({ navigation }) => {
 					color="#ffde59"
 					title="Login"
 					onPress={() => {
-						navigation.navigate('Home', {
+						navigation.navigate("Home", {
 							data: formData,
 						});
 						setFormData(initialFormData);
@@ -85,16 +85,16 @@ export default ({ navigation }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center',
+		backgroundColor: "#fff",
+		alignItems: "center",
+		justifyContent: "center",
 	},
 	button: {
-		width: '80%',
+		width: "80%",
 		marginTop: 20,
 	},
 	input: {
-		width: '80%',
+		width: "80%",
 		height: 40,
 		marginTop: 10,
 		borderBottomWidth: 1,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
 		paddingLeft: 0,
 	},
 	title: {
-		width: '80%',
+		width: "80%",
 	},
 	image: {
 		marginBottom: 30,
