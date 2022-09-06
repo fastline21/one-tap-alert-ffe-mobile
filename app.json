@@ -22,11 +22,17 @@
 			"adaptiveIcon": {
 				"foregroundImage": "./app/assets/adaptive-icon.png",
 				"backgroundColor": "#FFFFFF"
-			}
+			},
+			"package": "com.oniojoshua.onetapalertffemobile"
 		},
 		"web": {
 			"favicon": "./app/assets/favicon.png"
 		},
-		"owner": "oniojoshua"
+		"owner": "oniojoshua",
+		"extra": {
+			"eas": {
+				"projectId": "68508fa6-baf0-446d-89a3-1181a4fd687d"
+			}
+		}
 	}
 }

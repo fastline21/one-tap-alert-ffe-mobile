@@ -8,80 +8,67 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import axios from "axios";
-import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 
 import { APP_SERVER_URL } from "@env";
 
+import { getUserInfo } from "../actions/usersAction";
+import { getAllEmergencyTypes } from "../actions/emergencyTypesAction";
+import { createEmergency } from "../actions/emergenciesAction";
+
+import { getLocation } from "../utilities/location";
+
 export default ({ route, navigation }) => {
-	const { data } = route.params;
+	const initialUserInfo = {
+		firstName: null,
+		lastName: null,
+	};
 
 	const [errorMessage, setErrorMessage] = useState(null);
 	const [location, setLocation] = useState(null);
+	const [userInfo, setUserInfo] = useState(initialUserInfo);
 
-	const getLocation = async () => {
-		const { status } = await Location.requestForegroundPermissionsAsync();
-
-		if (status !== "granted") {
-			setErrorMessage("Permission to access location was denied");
-
-			return;
-		}
-
-		const location = await Location.getCurrentPositionAsync({});
-
-		setLocation(location);
-	};
-
-	const getAllEmergencyTypes = async () => {
-		const res = await axios.get(`${APP_SERVER_URL}/emergency-types`);
-
-		return res.data;
-	};
+	const { firstName, lastName } = userInfo;
 
 	const handleActionAlert = async (name) => {
 		const emergencyTypes = await getAllEmergencyTypes();
 
-		const { id: emergency_type_id = 0 } = emergencyTypes.find(
+		const { _id: emergency_type_id } = emergencyTypes.find(
 			(element) => element.name === name
 		);
 
 		const { longitude, latitude } = location.coords;
 
-		const config = {
-			headers: {
-				"Content-Type": "application/json",
-			},
-		};
-
-		const data = {
-			user_id: 1,
+		const body = {
 			emergency_type_id,
 			longitude,
 			latitude,
 		};
 
-		const res = await axios.post(`${APP_SERVER_URL}/emergencies`, data, config);
-
-		console.log(res.data);
+		await createEmergency(body);
 	};
 
 	useEffect(() => {
-		getLocation();
+		getLocation().then((data) => setLocation(data));
+		getUserInfo().then((data) => {
+			const { first_name, last_name } = data;
+			setUserInfo({ firstName: first_name, lastName: last_name });
+		});
 	}, []);
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<Image
-				fadeDuration={1000}
-				source={{
-					width: 200,
-					height: 200,
-					uri: `${APP_SERVER_URL}/images/logo.png`,
-				}}
-			/>
+			<View>
+				<Image
+					style={logoImageStyle}
+					fadeDuration={1000}
+					source={require("./../assets/logo.png")}
+				/>
+			</View>
 			<View style={styles.name}>
-				<Text style={styles.nameText}>Hi {data.username || "User"}!</Text>
+				<Text style={styles.nameText}>
+					Hi {`${firstName} ${lastName}` || "User"}!
+				</Text>
 			</View>
 			<View style={styles.button}>
 				<Button
@@ -106,7 +93,13 @@ export default ({ route, navigation }) => {
 				/>
 			</View>
 			<View style={styles.button}>
-				<Button title="Logout" onPress={() => navigation.goBack()} />
+				<Button
+					title="Logout"
+					onPress={async () => {
+						await removeToken("token");
+						navigation.goBack();
+					}}
+				/>
 			</View>
 			<StatusBar style="auto" />
 		</SafeAreaView>
