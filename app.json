@@ -1,38 +1,38 @@
 {
-	"expo": {
-		"name": "One-Tap Alert FFE Mobile",
-		"slug": "one-tap-alert-ffe-mobile",
-		"version": "1.0.0",
-		"orientation": "portrait",
-		"icon": "./app/assets/icon.png",
-		"userInterfaceStyle": "light",
-		"splash": {
-			"image": "./app/assets/splash.png",
-			"resizeMode": "contain",
-			"backgroundColor": "#ffffff"
-		},
-		"updates": {
-			"fallbackToCacheTimeout": 0
-		},
-		"assetBundlePatterns": ["**/*"],
-		"ios": {
-			"supportsTablet": true
-		},
-		"android": {
-			"adaptiveIcon": {
-				"foregroundImage": "./app/assets/adaptive-icon.png",
-				"backgroundColor": "#FFFFFF"
-			},
-			"package": "com.oniojoshua.onetapalertffemobile"
-		},
-		"web": {
-			"favicon": "./app/assets/favicon.png"
-		},
-		"owner": "oniojoshua",
-		"extra": {
-			"eas": {
-				"projectId": "68508fa6-baf0-446d-89a3-1181a4fd687d"
-			}
-		}
-	}
+  "expo": {
+    "name": "One-Tap Alert FFE Mobile",
+    "slug": "one-tap-alert-ffe-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./app/assets/logo.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./app/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./app/assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.fastline21.onetapalertffemobile"
+    },
+    "web": {
+      "favicon": "./app/assets/favicon.png"
+    },
+    "owner": "fastline21",
+    "extra": {
+      "eas": {
+        "projectId": "68508fa6-baf0-446d-89a3-1181a4fd687d"
+      }
+    }
+  }
 }
