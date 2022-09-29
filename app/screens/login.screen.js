@@ -31,9 +31,12 @@ import {
   textStyle,
 } from '../styles';
 
+// Utilities
+import { getToken } from '../utilities/token';
+
 const LoginScreen = ({
   navigation,
-  authState: { user, loading },
+  authState: { user, loading, error },
   loginUser,
   authUser,
 }) => {
@@ -64,9 +67,17 @@ const LoginScreen = ({
     setFormData(initialFormData);
   };
 
+  const checkAuthToken = async () => {
+    const authToken = await getToken('auth_token');
+
+    if (authToken) {
+      await authUser();
+    }
+  };
+
   // First run
   useEffect(() => {
-    authUser();
+    checkAuthToken();
   }, []);
 
   useEffect(() => {
@@ -85,7 +96,11 @@ const LoginScreen = ({
         });
       }
     }
-  }, [user]);
+
+    if (error) {
+      alert(JSON.stringify(error));
+    }
+  }, [user, error]);
 
   if (loading) {
     return <LoadingComponent />;

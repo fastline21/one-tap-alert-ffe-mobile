@@ -1,4 +1,9 @@
-import { LOGIN_USER, AUTH_USER, AUTH_LOADING } from '../types/auth.type';
+import {
+  LOGIN_USER,
+  AUTH_USER,
+  AUTH_LOADING,
+  AUTH_ERROR,
+} from '../types/auth.type';
 
 import { storeToken, removeToken, getToken } from '../../utilities/token';
 
@@ -25,6 +30,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: true,
+      };
+    case AUTH_ERROR:
+      return {
+        ...state,
+        error: action.payload,
+        loading: false,
       };
     default:
       return state;

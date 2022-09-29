@@ -14,6 +14,8 @@ import residentButtonStyle from '../styles/resident-button.style';
 // Actions
 import { getUserInfo } from '../redux/actions/user.action';
 
+import { removeToken } from '../utilities/token';
+
 const ResidentScreen = ({
   route,
   navigation,
@@ -85,6 +87,16 @@ const ResidentScreen = ({
         >
           <Text style={residentButtonStyle.inner.text}>Earthquake</Text>
         </TouchableOpacity>
+      </View>
+      <View>
+        <Button
+          onPress={async () => {
+            await removeToken('auth_token');
+            navigation.navigate('Login');
+          }}
+        >
+          Logout
+        </Button>
       </View>
     </MainScreen>
   );

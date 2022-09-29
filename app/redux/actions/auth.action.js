@@ -4,7 +4,12 @@ import axios from 'axios';
 import { APP_SERVER_URL, APP_SERVER_API_KEY } from '@env';
 
 // Types
-import { AUTH_USER, LOGIN_USER, AUTH_LOADING } from '../types/auth.type';
+import {
+  AUTH_USER,
+  LOGIN_USER,
+  AUTH_LOADING,
+  AUTH_ERROR,
+} from '../types/auth.type';
 
 // Utilities
 import { setToken } from '../../utilities/token';
@@ -31,7 +36,26 @@ export const loginUser = (data) => async (dispatch) => {
 
     authUser()(dispatch);
   } catch (error) {
-    console.error(error);
+    return dispatch({
+      type: AUTH_ERROR,
+      payload: {
+        statusCode: 500,
+        message: error,
+      },
+    });
+
+    // const {
+    //   status_code: statusCode,
+    //   data: { message },
+    // } = error.response.data;
+
+    // dispatch({
+    //   type: AUTH_ERROR,
+    //   payload: {
+    //     statusCode,
+    //     message,
+    //   },
+    // });
   }
 };
 
@@ -57,7 +81,26 @@ export const authUser = () => async (dispatch) => {
       payload: res.data,
     });
   } catch (error) {
-    console.error(error);
+    return dispatch({
+      type: AUTH_ERROR,
+      payload: {
+        statusCode: 500,
+        message: error,
+      },
+    });
+
+    // const {
+    //   status_code: statusCode,
+    //   data: { message },
+    // } = error.response.data;
+
+    // dispatch({
+    //   type: AUTH_ERROR,
+    //   payload: {
+    //     statusCode,
+    //     message,
+    //   },
+    // });
   }
 };
 
