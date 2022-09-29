@@ -23,7 +23,7 @@
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.fastline21.onetapalertffemobile"
+      "package": "com.onetapalertffemobile.onetapalertffemobile"
     },
     "web": {
       "favicon": "./app/assets/favicon.png"

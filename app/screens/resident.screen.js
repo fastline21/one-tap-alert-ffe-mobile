@@ -1,145 +1,102 @@
-import {
-  Text,
-  View,
-  SafeAreaView,
-  Image,
-  Button,
-  StyleSheet,
-} from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import axios from 'axios';
+import { View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { Button } from 'react-native-paper';
 
-import { APP_SERVER_URL } from '@env';
+// Screens
+import MainScreen from './main.screen';
 
-import { getUserInfo } from '../actions/usersAction';
-import { getAllEmergencyTypes } from '../actions/emergencyTypesAction';
-import { createEmergency } from '../actions/emergenciesAction';
+// Styles
+import logoStyle from '../styles/logo.style';
+import residentButtonStyle from '../styles/resident-button.style';
 
-import { getLocation } from '../utilities/location';
-import { removeToken } from '../utilities/token';
+// Actions
+import { getUserInfo } from '../redux/actions/user.action';
 
-import { logoImageStyle } from '../styles';
-
-import LoadingComponent from '../components/loading.component';
-
-export default ({ route, navigation }) => {
-  const initialUserInfo = {
-    firstName: null,
-    lastName: null,
-  };
-
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [location, setLocation] = useState(null);
-  const [userInfo, setUserInfo] = useState(initialUserInfo);
-  const [loading, setLoading] = useState(true);
-
-  const { firstName, lastName } = userInfo;
-
-  const handleActionAlert = async (name) => {
-    const emergencyTypes = await getAllEmergencyTypes();
-
-    const { _id: emergency_type_id } = emergencyTypes.find(
-      (element) => element.name === name
-    );
-
-    const { longitude, latitude } = location.coords;
-
-    const body = {
-      emergency_type_id,
-      longitude,
-      latitude,
-    };
-
-    await createEmergency(body);
-  };
-
+const ResidentScreen = ({
+  route,
+  navigation,
+  userState: { userInfo },
+  getUserInfo,
+}) => {
+  // First run
   useEffect(() => {
-    getLocation().then((data) => setLocation(data));
-    getUserInfo()
-      .then((data) => {
-        const {
-          user_info: { first_name, last_name },
-        } = data;
-        setUserInfo({ firstName: first_name, lastName: last_name });
-        setLoading(false);
-      })
-      .catch((error) => alert(error.message));
+    getUserInfo(route.params.userID);
   }, []);
 
-  if (loading) {
-    return <LoadingComponent />;
-  }
+  const handleDisaster = (type) => {
+    navigation.navigate('Camera', {
+      emergencyType: type,
+      userType: route.params.userType,
+    });
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View>
+    <MainScreen>
+      <View style={[logoStyle.outer, { paddingTop: 100 }]}>
         <Image
-          style={logoImageStyle}
+          style={logoStyle.inner}
           fadeDuration={1000}
           source={require('./../assets/logo.png')}
         />
       </View>
-      <View style={styles.name}>
-        <Text style={styles.nameText}>
-          Hi {`${firstName} ${lastName}` || 'User'}!
+      <View style={{ marginLeft: 50, marginBottom: 10 }}>
+        <Text style={{ fontSize: 32 }}>
+          Hi{' '}
+          {!userInfo
+            ? 'User'
+            : `${userInfo?.first_name} ${userInfo?.last_name}`}
+          !
         </Text>
       </View>
-      <View style={styles.button}>
-        <Button
-          title="Fire"
-          onPress={async () => await handleActionAlert('Fire')}
-          color="crimson"
-        />
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+        }}
+      >
+        <TouchableOpacity
+          style={[
+            residentButtonStyle.outer,
+            residentButtonStyle.inner.fireColor,
+          ]}
+          onPress={() => handleDisaster('fire')}
+        >
+          <Text style={residentButtonStyle.inner.text}>Fire</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            residentButtonStyle.outer,
+            residentButtonStyle.inner.floodColor,
+          ]}
+          onPress={() => handleDisaster('flood')}
+        >
+          <Text style={residentButtonStyle.inner.text}>Flood</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            residentButtonStyle.outer,
+            residentButtonStyle.inner.earthquakeColor,
+          ]}
+          onPress={() => handleDisaster('earthquake')}
+        >
+          <Text style={residentButtonStyle.inner.text}>Earthquake</Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.button}>
-        <Button
-          title="Flood"
-          onPress={async () => await handleActionAlert('Flood')}
-          color="khaki"
-        />
-      </View>
-      <View style={styles.button}>
-        <Button
-          title="Earthquake"
-          // onPress={async () => await handleActionAlert('Earthquake')}
-          onPress={() => navigation.navigate('Camera')}
-          color="saddlebrown"
-        />
-      </View>
-      <View style={styles.button}>
-        <Button
-          title="Logout"
-          onPress={async () => {
-            await removeToken('token');
-            // navigation.goBack();
-            navigation.navigate('Login');
-          }}
-        />
-      </View>
-      <StatusBar style="auto" />
-    </SafeAreaView>
+    </MainScreen>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  button: {
-    width: '80%',
-    marginTop: 20,
-  },
-  image: {
-    marginBottom: 30,
-  },
-  name: {
-    marginTop: 20,
-  },
-  nameText: {
-    fontSize: 30,
-  },
+ResidentScreen.propTypes = {
+  userState: PropTypes.object.isRequired,
+  getUserInfo: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  userState: state.userState,
 });
+
+export default connect(mapStateToProps, { getUserInfo })(ResidentScreen);

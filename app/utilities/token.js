@@ -12,3 +12,7 @@ export const removeToken = async (key, options = {}) => {
 export const setToken = async (key) => {
   axios.defaults.headers.common['x-auth-token'] = await getToken(key);
 };
+
+export const storeToken = async (key, value) => {
+  await SecureStore.setItemAsync(key, value);
+};

@@ -1,9 +1,27 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-export const buttonStyle = StyleSheet.create({
-  width: '80%',
-  marginTop: 20,
-});
+import inputStyle from './input.style';
+import containerStyle from './container.style';
+import imageBackgroundStyle from './imageBackground.style';
+import logoStyle from './logo.style';
+import buttonStyle from './button.style';
+import titleStyle from './title.style';
+import textStyle from './text.style';
+
+export {
+  inputStyle,
+  containerStyle,
+  imageBackgroundStyle,
+  logoStyle,
+  buttonStyle,
+  titleStyle,
+  textStyle,
+};
+
+// export const buttonStyle = StyleSheet.create({
+//   width: '80%',
+//   marginTop: 20,
+// });
 
 export const logoImageStyle = StyleSheet.create({
   marginBottom: 30,
@@ -25,13 +43,13 @@ export const inputTextStyle = StyleSheet.create({
   },
 });
 
-export const titleStyle = StyleSheet.create({
-  width: '80%',
-});
+// export const titleStyle = StyleSheet.create({
+//   width: '80%',
+// });
 
-export const titleTextStyle = StyleSheet.create({
-  fontSize: 18,
-});
+// export const titleTextStyle = StyleSheet.create({
+//   fontSize: 18,
+// });
 
 export const hyperLinkStyle = StyleSheet.create({
   color: 'blue',
@@ -47,15 +65,4 @@ export const centerContentStyle = StyleSheet.create({
   justifyContent: 'center',
   paddingTop: 150,
   paddingBottom: 50,
-});
-
-export const imageBackgroundStyle = StyleSheet.create({
-  width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height,
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  zIndex: -1,
 });

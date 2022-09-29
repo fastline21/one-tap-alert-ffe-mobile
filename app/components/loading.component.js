@@ -1,17 +1,22 @@
-import { SafeAreaView, Image, View } from 'react-native';
+import { SafeAreaView, Image } from 'react-native';
 
-import { centerContentStyle, logoImageStyle } from '../styles';
+import { containerStyle, logoStyle } from '../styles';
 
-export default () => {
+const Loading = () => {
   return (
-    <SafeAreaView style={centerContentStyle}>
-      <View>
-        <Image
-          style={logoImageStyle}
-          fadeDuration={1000}
-          source={require('../assets/loading-transparent.gif')}
-        />
-      </View>
+    <SafeAreaView
+      style={[
+        containerStyle,
+        { alignItems: 'center', justifyContent: 'center' },
+      ]}
+    >
+      <Image
+        style={logoStyle.inner}
+        fadeDuration={1000}
+        source={require('./../assets/loading-transparent.gif')}
+      />
     </SafeAreaView>
   );
 };
+
+export default Loading;

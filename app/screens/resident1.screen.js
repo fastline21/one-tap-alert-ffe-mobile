@@ -21,6 +21,8 @@ import { removeToken } from '../utilities/token';
 
 import { logoImageStyle } from '../styles';
 
+import LoadingComponent from '../components/loading.component';
+
 export default ({ route, navigation }) => {
   const initialUserInfo = {
     firstName: null,
@@ -30,6 +32,7 @@ export default ({ route, navigation }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [location, setLocation] = useState(null);
   const [userInfo, setUserInfo] = useState(initialUserInfo);
+  const [loading, setLoading] = useState(true);
 
   const { firstName, lastName } = userInfo;
 
@@ -53,13 +56,20 @@ export default ({ route, navigation }) => {
 
   useEffect(() => {
     getLocation().then((data) => setLocation(data));
-    getUserInfo().then((data) => {
-      const {
-        user_info: { first_name, last_name },
-      } = data;
-      setUserInfo({ firstName: first_name, lastName: last_name });
-    });
+    getUserInfo()
+      .then((data) => {
+        const {
+          user_info: { first_name, last_name },
+        } = data;
+        setUserInfo({ firstName: first_name, lastName: last_name });
+        setLoading(false);
+      })
+      .catch((error) => alert(error.message));
   }, []);
+
+  if (loading) {
+    return <LoadingComponent />;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
