@@ -11,6 +11,8 @@ import {
 import { Camera, CameraType } from 'expo-camera';
 import { useState, useEffect } from 'react';
 import { Avatar } from 'react-native-paper';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 // Screens
 import MainScreen from './main.screen';
@@ -18,7 +20,15 @@ import MainScreen from './main.screen';
 // Constants
 import { RATIOS } from '../constants/ratios';
 
-const CameraScreen = ({ route, navigation }) => {
+// Actions
+import { storeEmergency } from '../redux/actions/emergency.action';
+
+const CameraScreen = ({
+  route,
+  navigation,
+  emergencyState: { emergency },
+  storeEmergency,
+}) => {
   const initialRatio = RATIOS.DEFAULT;
 
   const [camera, setCamera] = useState(null);
@@ -98,12 +108,8 @@ const CameraScreen = ({ route, navigation }) => {
 
   const handleCapturePicture = async () => {
     const data = await camera.takePictureAsync();
-    navigation.navigate('ViewCaptureImage', {
-      imageURI: data.uri,
-      height: Dimensions.get('window').height,
-      emergencyType: route.params.emergencyType,
-      userType: route.params.userType,
-    });
+    storeEmergency({ imageURI: data.uri });
+    navigation.navigate('ViewCaptureImage');
   };
 
   const handleClose = () => {
@@ -156,7 +162,22 @@ const CameraScreen = ({ route, navigation }) => {
   );
 };
 
-export default CameraScreen;
+CameraScreen.propTypes = {
+  userState: PropTypes.object.isRequired,
+  authState: PropTypes.object.isRequired,
+  emergencyState: PropTypes.object.isRequired,
+  emergencyTypesState: PropTypes.object.isRequired,
+  storeEmergency: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  userState: state.userState,
+  authState: state.authState,
+  emergencyState: state.emergencyState,
+  emergencyTypesState: state.emergencyTypesState,
+});
+
+export default connect(mapStateToProps, { storeEmergency })(CameraScreen);
 
 const styles = StyleSheet.create({
   container: {

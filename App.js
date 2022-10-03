@@ -6,6 +6,7 @@ import configureStore from './configureStore';
 
 const Stack = createNativeStackNavigator();
 
+// Screens
 import LoginScreen from './app/screens/login.screen';
 import RegisterScreen from './app/screens/register.screen';
 import CameraScreen from './app/screens/camera.screen';
@@ -14,10 +15,10 @@ import ResidentScreen from './app/screens/resident.screen';
 import ReportScreen from './app/screens/report.screen';
 import ViewCaptureImageScreen from './app/screens/view-capture-image.screen';
 import MapScreen from './app/screens/map.screen';
-import TestScreen from './app/screens/test.screen';
 
 // Test Screen Only
-import HomeScreen from './app/screens/home.screen';
+// import TestScreen from './app/screens/test.screen';
+// import Test1Screen from './app/screens/test1.screen';
 
 const App = () => {
   return (
@@ -28,8 +29,8 @@ const App = () => {
             headerShown: false,
           }}
         >
-          {/* <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Test" component={TestScreen} /> */}
+          {/* <Stack.Screen name="Test" component={TestScreen} /> */}
+          {/* <Stack.Screen name="Test1" component={Test1Screen} /> */}
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Resident" component={ResidentScreen} />

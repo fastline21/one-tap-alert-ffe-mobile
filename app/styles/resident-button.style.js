@@ -11,6 +11,9 @@ export default StyleSheet.create({
     earthquakeColor: {
       backgroundColor: '#9c7d67',
     },
+    defaultColor: {
+      backgroundColor: 'red',
+    },
     text: { color: '#fff' },
   },
   outer: {

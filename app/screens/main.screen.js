@@ -1,20 +1,22 @@
-import {
-  ImageBackground,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  View,
-  StatusBar,
-} from 'react-native';
+import { ImageBackground, SafeAreaView, StatusBar } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-import { centerContentStyle } from '../styles';
+// Styles
 import { containerStyle, imageBackgroundStyle } from '../styles';
 
-export default ({ children }) => {
+// Actions
+import { getAllEmergencyTypes } from '../redux/actions/emergency-types.action';
+
+const MainScreen = ({ children, getAllEmergencyTypes }) => {
   const [contentBottom, setContentBottom] = useState(0);
+
+  useEffect(() => {
+    getAllEmergencyTypes();
+  }, []);
+
   return (
     <SafeAreaView style={containerStyle}>
       <ImageBackground
@@ -35,3 +37,9 @@ export default ({ children }) => {
     </SafeAreaView>
   );
 };
+
+MainScreen.propTypes = {
+  getAllEmergencyTypes: PropTypes.func.isRequired,
+};
+
+export default connect(null, { getAllEmergencyTypes })(MainScreen);

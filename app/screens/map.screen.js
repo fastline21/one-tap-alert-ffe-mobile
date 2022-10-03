@@ -19,31 +19,45 @@ import { getLocation } from '../utilities/location';
 // Actions
 import { submitEmergency } from '../redux/actions/emergency.action';
 
-const MapScreen = ({ route, navigation, submitEmergency }) => {
+const MapScreen = ({
+  route,
+  navigation,
+  emergencyState: { emergency },
+  submitEmergency,
+}) => {
   const [currentLocation, setCurrentLocation] = useState({
     latitude: 0,
     longitude: 0,
     latitudeDelta: COORDINATES.LATITUDE_DELTA,
     longitudeDelta: COORDINATES.LONGITUDE_DELTA,
   });
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleSubmit = () => {
     submitEmergency({
-      emergency_type_id: route.params.emergencyType,
+      emergency_type_id: emergency.emergencyTypeID,
+      image_uri: emergency.imageURI,
       longitude: currentLocation.longitude,
       latitude: currentLocation.latitude,
     });
   };
 
   useEffect(() => {
-    getLocation().then((location) => {
-      const { longitude, latitude } = location.coords;
-      setCurrentLocation({ ...currentLocation, longitude, latitude });
-    });
+    (async () => {
+      try {
+        const location = await getLocation();
+
+        const { longitude, latitude } = location.coords;
+        setCurrentLocation({ ...currentLocation, longitude, latitude });
+      } catch (error) {
+        setErrorMessage(error);
+      }
+    })();
   }, []);
 
   return (
     <MainScreen>
+      {errorMessage && alert(errorMessage)}
       <View style={mapStyle.outer}>
         <MapView
           style={mapStyle.inner}
@@ -80,4 +94,11 @@ MapScreen.propTypes = {
   submitEmergency: PropTypes.func.isRequired,
 };
 
-export default connect(null, { submitEmergency })(MapScreen);
+const mapStateToProps = (state) => ({
+  userState: state.userState,
+  authState: state.authState,
+  emergencyState: state.emergencyState,
+  emergencyTypesState: state.emergencyTypesState,
+});
+
+export default connect(mapStateToProps, { submitEmergency })(MapScreen);

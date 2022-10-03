@@ -1,13 +1,11 @@
-import * as Location from "expo-location";
+import * as Location from 'expo-location';
 
 export const getLocation = async () => {
-	const { status } = await Location.requestForegroundPermissionsAsync();
+  const { status } = await Location.requestForegroundPermissionsAsync();
 
-	if (status !== "granted") {
-		setErrorMessage("Permission to access location was denied");
+  if (status !== 'granted') {
+    throw Error('Permission to access location was denied');
+  }
 
-		return;
-	}
-
-	return await Location.getCurrentPositionAsync({});
+  return await Location.getCurrentPositionAsync({});
 };

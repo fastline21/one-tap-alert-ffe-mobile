@@ -13,26 +13,38 @@ import residentButtonStyle from '../styles/resident-button.style';
 
 // Actions
 import { getUserInfo } from '../redux/actions/user.action';
+import { storeEmergency } from '../redux/actions/emergency.action';
 
+// Utilities
 import { removeToken } from '../utilities/token';
+
+// Components
+import LoadingComponent from '../components/loading.component';
+import EmergencyTypesComponent from '../components/emergency-types.component';
 
 const ResidentScreen = ({
   route,
   navigation,
-  userState: { userInfo },
+  userState: { userInfo, loading: userLoading },
+  emergencyTypesState: { emergencyTypes, loading: emergencyTypesLoading },
+  authState: { user },
+  emergencyState: { emergency },
   getUserInfo,
+  storeEmergency,
 }) => {
   // First run
   useEffect(() => {
     getUserInfo(route.params.userID);
   }, []);
 
-  const handleDisaster = (type) => {
-    navigation.navigate('Camera', {
-      emergencyType: type,
-      userType: route.params.userType,
-    });
+  const handleDisaster = (emergencyTypeID) => {
+    storeEmergency({ emergencyTypeID });
+    navigation.navigate('Camera');
   };
+
+  if (emergencyTypesLoading) {
+    return <LoadingComponent />;
+  }
 
   return (
     <MainScreen>
@@ -52,42 +64,10 @@ const ResidentScreen = ({
           !
         </Text>
       </View>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-        }}
-      >
-        <TouchableOpacity
-          style={[
-            residentButtonStyle.outer,
-            residentButtonStyle.inner.fireColor,
-          ]}
-          onPress={() => handleDisaster('fire')}
-        >
-          <Text style={residentButtonStyle.inner.text}>Fire</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            residentButtonStyle.outer,
-            residentButtonStyle.inner.floodColor,
-          ]}
-          onPress={() => handleDisaster('flood')}
-        >
-          <Text style={residentButtonStyle.inner.text}>Flood</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            residentButtonStyle.outer,
-            residentButtonStyle.inner.earthquakeColor,
-          ]}
-          onPress={() => handleDisaster('earthquake')}
-        >
-          <Text style={residentButtonStyle.inner.text}>Earthquake</Text>
-        </TouchableOpacity>
-      </View>
+      <EmergencyTypesComponent
+        data={{ emergencyTypes }}
+        action={{ handleDisaster }}
+      />
       <View>
         <Button
           onPress={async () => {
@@ -104,11 +84,19 @@ const ResidentScreen = ({
 
 ResidentScreen.propTypes = {
   userState: PropTypes.object.isRequired,
+  authState: PropTypes.object.isRequired,
+  emergencyTypesState: PropTypes.object.isRequired,
   getUserInfo: PropTypes.func.isRequired,
+  storeEmergency: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   userState: state.userState,
+  authState: state.authState,
+  emergencyState: state.emergencyState,
+  emergencyTypesState: state.emergencyTypesState,
 });
 
-export default connect(mapStateToProps, { getUserInfo })(ResidentScreen);
+export default connect(mapStateToProps, { getUserInfo, storeEmergency })(
+  ResidentScreen
+);
