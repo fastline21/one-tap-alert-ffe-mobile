@@ -13,6 +13,7 @@ const initialState = {
   success: null,
   error: null,
   loading: false,
+  message: null,
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -31,7 +32,8 @@ export default (state = initialState, action) => {
     case EMERGENCIES_SUCCESS:
       return {
         ...state,
-        success: action.payload.data,
+        success: action.payload.data.success,
+        message: action.payload.data.message,
         loading: false,
       };
     case EMERGENCIES_ERROR:
@@ -46,6 +48,7 @@ export default (state = initialState, action) => {
         success: null,
         error: null,
         loading: false,
+        message: null,
       };
     case STORE_EMERGENCY:
       const { payload } = action;
