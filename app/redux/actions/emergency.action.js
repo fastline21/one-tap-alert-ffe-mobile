@@ -40,8 +40,10 @@ export const submitEmergency = (data) => async (dispatch) => {
     dispatch({
       type: EMERGENCIES_ERROR,
       payload: {
-        statusCode: 500,
-        message: error,
+        data: {
+          error: true,
+          message: error.message,
+        },
       },
     });
   }

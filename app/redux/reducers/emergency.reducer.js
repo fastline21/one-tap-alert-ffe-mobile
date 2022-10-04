@@ -39,7 +39,8 @@ export default (state = initialState, action) => {
     case EMERGENCIES_ERROR:
       return {
         ...state,
-        error: action.payload.data,
+        error: action.payload.data.error,
+        message: action.payload.data.message,
         loading: false,
       };
     case EMERGENCIES_CLEAR_RESPONSE:
