@@ -1,48 +1,33 @@
-import { View, Text, Button } from 'react-native';
-import MainScreen from './main.screen';
+import { View, Button } from 'react-native';
 import { DataTable } from 'react-native-paper';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 
-const ResponderScreen = ({ navigation }) => {
-  const sample = [
-    {
-      id: 1,
-      name: 'Test 1',
-      disaster: 'Fire',
-      status: 'Pending',
-    },
-    {
-      id: 2,
-      name: 'Test 2',
-      disaster: 'Fire',
-      status: 'Pending',
-    },
-    {
-      id: 3,
-      name: 'Test 3',
-      disaster: 'Fire',
-      status: 'Pending',
-    },
-    {
-      id: 4,
-      name: 'Test 4',
-      disaster: 'Fire',
-      status: 'Pending',
-    },
-    {
-      id: 5,
-      name: 'Test 5',
-      disaster: 'Fire',
-      status: 'Pending',
-    },
-  ];
+// Screens
+import MainScreen from './main.screen';
+
+// Actions
+import { getAllEmergencies } from '../redux/actions/emergency.action';
+
+// Components
+import Loading from '../components/loading.component';
+
+const ResponderScreen = ({
+  navigation,
+  emergencyState: { emergencies, loading, success, error, message },
+  getAllEmergencies,
+}) => {
+  useEffect(() => {
+    getAllEmergencies();
+  }, []);
+
+  if (loading || !emergencies) {
+    return <Loading />;
+  }
+
   return (
     <MainScreen>
-      <View>
-        <Text>Responder Screen</Text>
-      </View>
-      <View>
-        <Text>Reports</Text>
-      </View>
       <View
         style={{
           backgroundColor: '#fff',
@@ -51,35 +36,50 @@ const ResponderScreen = ({ navigation }) => {
           paddingBottom: 20,
         }}
       >
-        <DataTable>
-          <DataTable.Header>
-            <DataTable.Title>Name</DataTable.Title>
-            <DataTable.Title>Disaster</DataTable.Title>
-            <DataTable.Title>Status</DataTable.Title>
-            <DataTable.Title>Action</DataTable.Title>
-          </DataTable.Header>
-          {sample.map((data, index) => (
-            <DataTable.Row key={index}>
-              <DataTable.Cell>{data.name}</DataTable.Cell>
-              <DataTable.Cell>{data.disaster}</DataTable.Cell>
-              <DataTable.Cell>{data.status}</DataTable.Cell>
-              <DataTable.Cell>
-                <Button
-                  title="View"
-                  onPress={() =>
-                    navigation.navigate('Report', {
-                      title: 'Resident Info',
-                      id: data.id,
-                    })
-                  }
-                />
-              </DataTable.Cell>
-            </DataTable.Row>
-          ))}
-        </DataTable>
+        {!emergencies.length ? (
+          <Text>No emergencies found</Text>
+        ) : (
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title>Name</DataTable.Title>
+              <DataTable.Title>Disaster</DataTable.Title>
+              <DataTable.Title>Status</DataTable.Title>
+              <DataTable.Title>Action</DataTable.Title>
+            </DataTable.Header>
+            {emergencies.map((data, index) => (
+              <DataTable.Row key={index}>
+                <DataTable.Cell>{`${data.user_info.first_name} ${data.user_info.last_name}`}</DataTable.Cell>
+                <DataTable.Cell>{data.emergency_type_id.name}</DataTable.Cell>
+                <DataTable.Cell>{data.emergency_status_id.name}</DataTable.Cell>
+                <DataTable.Cell>
+                  <Button
+                    title="View"
+                    onPress={() =>
+                      navigation.navigate('Report', {
+                        title: 'Resident Info',
+                        id: data.id,
+                      })
+                    }
+                  />
+                </DataTable.Cell>
+              </DataTable.Row>
+            ))}
+          </DataTable>
+        )}
       </View>
     </MainScreen>
   );
 };
 
-export default ResponderScreen;
+ResponderScreen.propTypes = {
+  emergencyState: PropTypes.object.isRequired,
+  getAllEmergencies: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  emergencyState: state.emergencyState,
+});
+
+export default connect(mapStateToProps, {
+  getAllEmergencies,
+})(ResponderScreen);

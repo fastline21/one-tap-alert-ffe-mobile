@@ -2,18 +2,21 @@ import { View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Button } from 'react-native-paper';
+import { Button, Avatar, Drawer } from 'react-native-paper';
 
 // Screens
 import MainScreen from './main.screen';
 
 // Styles
-import logoStyle from '../styles/logo.style';
 import residentButtonStyle from '../styles/resident-button.style';
 
 // Actions
 import { getUserInfo } from '../redux/actions/user.action';
-import { storeEmergency } from '../redux/actions/emergency.action';
+import {
+  storeEmergency,
+  submitEmergency,
+  emergenciesClearResponse,
+} from '../redux/actions/emergency.action';
 
 // Utilities
 import { removeToken } from '../utilities/token';
@@ -21,6 +24,7 @@ import { removeToken } from '../utilities/token';
 // Components
 import LoadingComponent from '../components/loading.component';
 import EmergencyTypesComponent from '../components/emergency-types.component';
+import Map from '../components/map.component';
 
 const ResidentScreen = ({
   route,
@@ -28,19 +32,53 @@ const ResidentScreen = ({
   userState: { userInfo, loading: userLoading },
   emergencyTypesState: { emergencyTypes, loading: emergencyTypesLoading },
   authState: { user },
-  emergencyState: { emergency },
+  emergencyState: {
+    emergency,
+    message: emergencyMessage,
+    success: emergencySuccess,
+    error: emergencyError,
+  },
+  locationState: { location },
   getUserInfo,
   storeEmergency,
+  submitEmergency,
+  emergenciesClearResponse,
 }) => {
+  const [active, setActive] = useState('');
+
   // First run
   useEffect(() => {
     getUserInfo(route.params.userID);
   }, []);
 
   const handleDisaster = (emergencyTypeID) => {
-    storeEmergency({ emergencyTypeID });
-    navigation.navigate('Camera');
+    const { latitude, longitude } = location;
+    submitEmergency({
+      emergency_type_id: emergencyTypeID,
+      latitude,
+      longitude,
+    });
+    // storeEmergency({ emergencyTypeID });
+    // navigation.navigate('Camera');
   };
+
+  useEffect(() => {
+    if (userInfo) {
+      navigation.setOptions({
+        title: `${userInfo?.first_name} ${userInfo?.last_name}`,
+      });
+    }
+
+    if (emergencySuccess) {
+      alert(emergencyMessage);
+      emergenciesClearResponse();
+    }
+
+    if (emergencyError) {
+      alert(emergencyMessage);
+      emergenciesClearResponse();
+    }
+  }, [userInfo, emergencyMessage, emergencySuccess, emergencyError]);
 
   if (emergencyTypesLoading) {
     return <LoadingComponent />;
@@ -48,21 +86,8 @@ const ResidentScreen = ({
 
   return (
     <MainScreen>
-      <View style={[logoStyle.outer, { paddingTop: 100 }]}>
-        <Image
-          style={logoStyle.inner}
-          fadeDuration={1000}
-          source={require('./../assets/logo.png')}
-        />
-      </View>
-      <View style={{ marginLeft: 50, marginBottom: 10 }}>
-        <Text style={{ fontSize: 32 }}>
-          Hi{' '}
-          {!userInfo
-            ? 'User'
-            : `${userInfo?.first_name} ${userInfo?.last_name}`}
-          !
-        </Text>
+      <View style={{ marginBottom: 30 }}>
+        <Map height={300} />
       </View>
       <EmergencyTypesComponent
         data={{ emergencyTypes }}
@@ -86,8 +111,11 @@ ResidentScreen.propTypes = {
   userState: PropTypes.object.isRequired,
   authState: PropTypes.object.isRequired,
   emergencyTypesState: PropTypes.object.isRequired,
+  locationState: PropTypes.object.isRequired,
   getUserInfo: PropTypes.func.isRequired,
   storeEmergency: PropTypes.func.isRequired,
+  submitEmergency: PropTypes.func.isRequired,
+  emergenciesClearResponse: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -95,8 +123,12 @@ const mapStateToProps = (state) => ({
   authState: state.authState,
   emergencyState: state.emergencyState,
   emergencyTypesState: state.emergencyTypesState,
+  locationState: state.locationState,
 });
 
-export default connect(mapStateToProps, { getUserInfo, storeEmergency })(
-  ResidentScreen
-);
+export default connect(mapStateToProps, {
+  getUserInfo,
+  storeEmergency,
+  submitEmergency,
+  emergenciesClearResponse,
+})(ResidentScreen);

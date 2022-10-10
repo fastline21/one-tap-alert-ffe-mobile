@@ -10,7 +10,7 @@ import { containerStyle, imageBackgroundStyle } from '../styles';
 // Actions
 import { getAllEmergencyTypes } from '../redux/actions/emergency-types.action';
 
-const MainScreen = ({ children, getAllEmergencyTypes }) => {
+const MainScreen = ({ isAuth = false, children, getAllEmergencyTypes }) => {
   const [contentBottom, setContentBottom] = useState(0);
 
   useEffect(() => {

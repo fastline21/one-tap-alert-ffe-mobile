@@ -29,7 +29,7 @@ const ReportScreen = ({ route, navigation }) => {
         <Text>ID: {route.params.id}</Text>
       </View> */}
       <Card>
-        <Card.Title title={route.params.title} left={LeftContent} />
+        {/* <Card.Title title={route.params.title} left={LeftContent} /> */}
         <View
           style={{
             flex: 1,

@@ -5,10 +5,12 @@ import {
   EMERGENCIES_SUCCESS,
   EMERGENCIES_CLEAR_RESPONSE,
   STORE_EMERGENCY,
+  GET_ALL_EMERGENCIES,
 } from '../types/emergencies.type';
 
 const initialState = {
   emergencyTypes: null,
+  emergencies: null,
   emergency: null,
   success: null,
   error: null,
@@ -58,6 +60,21 @@ export default (state = initialState, action) => {
         ...state,
         loading: false,
         emergency: { ...state.emergency, ...payload },
+      };
+    case GET_ALL_EMERGENCIES:
+      console.log(action.payload);
+      const {
+        data: { emergencies },
+        message,
+        success,
+      } = action.payload;
+
+      return {
+        ...state,
+        emergencies,
+        message,
+        success,
+        loading: false,
       };
     default:
       return state;

@@ -1,287 +1,95 @@
-import {
-  View,
-  SafeAreaView,
-  Text,
-  TextInput,
-  ImageBackground,
-  Image,
-  TouchableOpacity,
-  Button,
-  ScrollView,
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { useState, useRef } from 'react';
-import moment from 'moment';
+import { View, Text } from 'react-native';
+import StepIndicator from 'react-native-step-indicator';
+import { useState } from 'react';
+import { Button } from 'react-native-paper';
 
+// Screens
 import MainScreen from './main.screen';
 
-import { createUser } from '../actions/usersAction';
+// Components
+import RegisterSteps from '../components/register-steps';
 
-import {
-  logoImageStyle,
-  titleStyle,
-  titleTextStyle,
-  inputTextStyle,
-  buttonStyle,
-  centerContentStyle,
-  imageBackgroundStyle,
-  hyperLinkStyle,
-} from '../styles';
+const RegisterScreen = ({ navigation }) => {
+  const labels = [
+    'Personal Information',
+    'Contact Information',
+    'Contact Person',
+    'Back ID',
+    'Selfie ID',
+    'Review',
+  ];
+  const customStyles = {
+    stepIndicatorSize: 25,
+    currentStepIndicatorSize: 30,
+    separatorStrokeWidth: 2,
+    currentStepStrokeWidth: 3,
+    stepStrokeCurrentColor: '#fe7013',
+    stepStrokeWidth: 3,
+    stepStrokeFinishedColor: '#fe7013',
+    stepStrokeUnFinishedColor: '#aaaaaa',
+    separatorFinishedColor: '#fe7013',
+    separatorUnFinishedColor: '#aaaaaa',
+    stepIndicatorFinishedColor: '#fe7013',
+    stepIndicatorUnFinishedColor: '#ffffff',
+    stepIndicatorCurrentColor: '#ffffff',
+    stepIndicatorLabelFontSize: 13,
+    currentStepIndicatorLabelFontSize: 13,
+    stepIndicatorLabelCurrentColor: '#fe7013',
+    stepIndicatorLabelFinishedColor: '#ffffff',
+    stepIndicatorLabelUnFinishedColor: '#aaaaaa',
+    labelColor: '#999999',
+    labelSize: 13,
+    currentStepLabelColor: '#fe7013',
+  };
+  const [currentPosition, setCurrentPosition] = useState(3);
 
-export default ({ navigation }) => {
-  const initialFormData = {
-    firstName: null,
-    middleName: null,
-    lastName: null,
-    address: null,
-    barangay: null,
-    zipCode: null,
-    birthDate: null,
-    emailAddress: null,
-    username: null,
-    password: null,
-    password2: null,
+  const handleNext = () => {
+    setCurrentPosition(currentPosition + 1);
   };
 
-  const [formData, setFormData] = useState(initialFormData);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const firstNameRef = useRef();
-  const middleNameRef = useRef();
-  const lastNameRef = useRef();
-  const addressRef = useRef();
-  const barangayRef = useRef();
-  const zipCodeRef = useRef();
-  const birthDateRef = useRef();
-  const emailAddressRef = useRef();
-  const usernameRef = useRef();
-  const passwordRef = useRef();
-  const password2Ref = useRef();
-
-  const {
-    firstName,
-    middleName,
-    lastName,
-    address,
-    barangay,
-    zipCode,
-    birthDate,
-    emailAddress,
-    username,
-    password,
-    password2,
-  } = formData;
-
-  const handleLogin = () => {
-    navigation.navigate('Login');
+  const handlePrevious = () => {
+    setCurrentPosition(currentPosition - 1);
   };
 
-  const handleChangeInput = (name, value, event = {}) => {
-    if (name === 'birthDate') {
-      setShowDatePicker(false);
-      const { type } = event;
-
-      if (type === 'dismissed') {
-        return;
-      }
-    }
-
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async () => {
-    const { middleName, ...rest } = formData;
-
-    const isRequiredNull = Object.values(rest).some((value) => {
-      if (value === null || value === undefined || value === '' || !value) {
-        return true;
-      }
-
-      return false;
-    });
-
-    if (isRequiredNull) {
-      alert('Please fill out all required fields');
-      return;
-    }
-
-    const res = await createUser({
-      ...formData,
-      first_name: firstName,
-      middle_name: middleName,
-      last_name: lastName,
-      email_address: emailAddress,
-      birth_date: birthDate,
-    });
-
-    alert(res.message);
-
-    setFormData(initialFormData);
-
-    handleLogin();
+  const handleCancel = () => {
+    navigation.goBack();
   };
 
   return (
     <MainScreen>
       <View>
-        <Image
-          style={logoImageStyle}
-          fadeDuration={1000}
-          source={require('./../assets/logo.png')}
+        <StepIndicator
+          customStyles={customStyles}
+          currentPosition={currentPosition}
+          labels={labels}
+          stepCount={6}
         />
       </View>
-      <View style={titleStyle}>
-        <Text style={titleTextStyle}>Register your Account</Text>
-      </View>
-      <View style={inputTextStyle.outer}>
-        <TextInput
-          placeholder="First Name"
-          onChangeText={(value) => handleChangeInput('firstName', value)}
-          value={firstName}
-          style={inputTextStyle.inner}
-          autoFocus={true}
-          returnKeyType="next"
-          onSubmitEditing={() => middleNameRef.current.focus()}
-          blurOnSubmit={false}
+      <View>
+        <RegisterSteps
+          step={currentPosition}
+          next={() => handleNext()}
+          previous={() => handlePrevious()}
+          cancel={() => handleCancel()}
         />
       </View>
-      <View style={inputTextStyle.outer}>
-        <TextInput
-          placeholder="Middle Name (Optional)"
-          onChangeText={(value) => handleChangeInput('middleName', value)}
-          value={middleName}
-          style={inputTextStyle.inner}
-          returnKeyType="next"
-          onSubmitEditing={() => lastNameRef.current.focus()}
-          blurOnSubmit={false}
-          ref={middleNameRef}
-        />
-      </View>
-      <View style={inputTextStyle.outer}>
-        <TextInput
-          placeholder="Last Name"
-          onChangeText={(value) => handleChangeInput('lastName', value)}
-          value={lastName}
-          style={inputTextStyle.inner}
-          returnKeyType="next"
-          onSubmitEditing={() => addressRef.current.focus()}
-          blurOnSubmit={false}
-          ref={lastNameRef}
-        />
-      </View>
-      <View style={inputTextStyle.outer}>
-        <TextInput
-          placeholder="Address"
-          onChangeText={(value) => handleChangeInput('address', value)}
-          value={address}
-          style={inputTextStyle.inner}
-          returnKeyType="next"
-          onSubmitEditing={() => barangayRef.current.focus()}
-          blurOnSubmit={false}
-          ref={addressRef}
-        />
-      </View>
-      <View style={inputTextStyle.outer}>
-        <TextInput
-          placeholder="Barangay"
-          onChangeText={(value) => handleChangeInput('barangay', value)}
-          value={barangay}
-          style={inputTextStyle.inner}
-          returnKeyType="next"
-          onSubmitEditing={() => zipCodeRef.current.focus()}
-          blurOnSubmit={false}
-          ref={barangayRef}
-        />
-      </View>
-      <View style={inputTextStyle.outer}>
-        <TextInput
-          placeholder="Zip Code"
-          onChangeText={(value) => handleChangeInput('zipCode', value)}
-          value={zipCode}
-          style={inputTextStyle.inner}
-          returnKeyType="next"
-          onSubmitEditing={() => emailAddressRef.current.focus()}
-          blurOnSubmit={false}
-          ref={zipCodeRef}
-        />
-      </View>
-      <TouchableOpacity
-        style={inputTextStyle.outer}
-        onPress={() => setShowDatePicker(!showDatePicker)}
-        title="Birthdate"
+      {/* <View
+        style={{
+          lex: 1,
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+        }}
       >
-        <Text style={{ color: 'gray' }}>
-          {!birthDate ? 'Birthdate' : moment(birthDate).format('MM/DD/YYYY')}
-        </Text>
-      </TouchableOpacity>
-      {showDatePicker && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={!birthDate ? moment().toDate() : birthDate}
-          onChange={(event, selectedDate) =>
-            handleChangeInput('birthDate', selectedDate, event)
-          }
-          mode="date"
-        />
-      )}
-      <View style={inputTextStyle.outer}>
-        <TextInput
-          placeholder="Email Address"
-          onChangeText={(value) => handleChangeInput('emailAddress', value)}
-          value={emailAddress}
-          style={inputTextStyle.inner}
-          returnKeyType="next"
-          onSubmitEditing={() => usernameRef.current.focus()}
-          blurOnSubmit={false}
-          ref={emailAddressRef}
-        />
-      </View>
-      <View style={inputTextStyle.outer}>
-        <TextInput
-          placeholder="Username"
-          onChangeText={(value) => handleChangeInput('username', value)}
-          value={username}
-          style={inputTextStyle.inner}
-          returnKeyType="next"
-          onSubmitEditing={() => passwordRef.current.focus()}
-          blurOnSubmit={false}
-          ref={usernameRef}
-        />
-      </View>
-      <View style={inputTextStyle.outer}>
-        <TextInput
-          placeholder="Password"
-          onChangeText={(value) => handleChangeInput('password', value)}
-          value={password}
-          secureTextEntry={true}
-          style={inputTextStyle.inner}
-          returnKeyType="next"
-          onSubmitEditing={() => password2Ref.current.focus()}
-          blurOnSubmit={false}
-          ref={passwordRef}
-        />
-      </View>
-      <View style={inputTextStyle.outer}>
-        <TextInput
-          placeholder="Confirm Password"
-          onChangeText={(value) => handleChangeInput('password2', value)}
-          value={password2}
-          secureTextEntry={true}
-          style={inputTextStyle.inner}
-          ref={password2Ref}
-        />
-      </View>
-      <View style={buttonStyle}>
-        <Button onPress={async () => await handleSubmit()} title="Submit" />
-      </View>
-      <View style={{ paddingTop: 20 }}>
-        <Text>
-          Have an account?{' '}
-          <Text style={hyperLinkStyle} onPress={() => handleLogin()}>
-            Login
-          </Text>
-        </Text>
-      </View>
+        {currentPosition !== 0 ? (
+          <Button onPress={handlePrevious}>Previous</Button>
+        ) : (
+          <Button onPress={handleCancel}>Cancel</Button>
+        )}
+        <Button onPress={handleNext}>Next</Button>
+      </View> */}
     </MainScreen>
   );
 };
+
+export default RegisterScreen;
