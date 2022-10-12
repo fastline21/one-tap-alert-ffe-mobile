@@ -8,13 +8,14 @@ import {
   TouchableOpacity,
   Platform,
   Dimensions,
+  Image,
 } from 'react-native';
 import { Avatar } from 'react-native-paper';
 
 // Constants
 import { RATIOS } from '../constants/ratios';
 
-const CameraView = ({ cameraType = 'back' }) => {
+const CameraView = ({ cameraType = 'back', capturedImage }) => {
   const initialRatio = RATIOS.DEFAULT;
 
   const [camera, setCamera] = useState(null);
@@ -96,34 +97,48 @@ const CameraView = ({ cameraType = 'back' }) => {
     const data = await camera.takePictureAsync();
     // storeEmergency({ imageURI: data.uri });
     // navigation.navigate('ViewCaptureImage');
+    capturedImage(data.uri);
+    setImageURI(data.uri);
   };
 
   return (
     <View style={{ height: Dimensions.get('window').height - 200 }}>
-      <Camera
-        style={styles.camera}
-        type={type}
-        ref={(ref) => setCamera(ref)}
-        onCameraReady={handleCameraReady}
-        ratio={ratio}
-      >
-        <View
+      {imageURI ? (
+        <Image
+          source={{ uri: imageURI }}
           style={{
-            alignItems: 'flex-end',
-            justifyContent: 'center',
-            flexDirection: 'row',
-            flex: 1,
-            margin: 64,
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height - 200,
           }}
+        />
+      ) : (
+        <Camera
+          style={styles.camera}
+          type={type}
+          ref={(ref) => setCamera(ref)}
+          onCameraReady={handleCameraReady}
+          ratio={ratio}
         >
-          <TouchableOpacity onPress={async () => await handleCapturePicture()}>
-            <Avatar.Icon
-              icon="camera"
-              style={{ backgroundColor: 'transparent' }}
-            />
-          </TouchableOpacity>
-        </View>
-      </Camera>
+          <View
+            style={{
+              alignItems: 'flex-end',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              flex: 1,
+              margin: 64,
+            }}
+          >
+            <TouchableOpacity
+              onPress={async () => await handleCapturePicture()}
+            >
+              <Avatar.Icon
+                icon="camera"
+                style={{ backgroundColor: 'transparent' }}
+              />
+            </TouchableOpacity>
+          </View>
+        </Camera>
+      )}
     </View>
   );
 };

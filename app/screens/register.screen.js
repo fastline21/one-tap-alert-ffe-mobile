@@ -41,7 +41,7 @@ const RegisterScreen = ({ navigation }) => {
     labelSize: 13,
     currentStepLabelColor: '#fe7013',
   };
-  const [currentPosition, setCurrentPosition] = useState(3);
+  const [currentPosition, setCurrentPosition] = useState(0);
 
   const handleNext = () => {
     setCurrentPosition(currentPosition + 1);

@@ -1,11 +1,15 @@
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';
-import { useState } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 // Components
 import CameraView from '../camera.component';
 
-const RegisterStep6 = ({ nextStep, previousStep, registerStep }) => {
+// Actions
+import { registerStep } from '../../redux/actions/register.action';
+
+const RegisterStep5 = ({ nextStep, previousStep, registerStep }) => {
   const handlePrevious = () => {
     previousStep();
   };
@@ -16,7 +20,10 @@ const RegisterStep6 = ({ nextStep, previousStep, registerStep }) => {
 
   return (
     <>
-      <CameraView cameraType="front" />
+      <CameraView
+        cameraType="front"
+        capturedImage={(data) => registerStep({ captured_image_front: data })}
+      />
       <View
         style={{
           lex: 1,
@@ -32,4 +39,8 @@ const RegisterStep6 = ({ nextStep, previousStep, registerStep }) => {
   );
 };
 
-export default RegisterStep6;
+RegisterStep5.propTypes = {
+  registerStep: PropTypes.func.isRequired,
+};
+
+export default connect(null, { registerStep })(RegisterStep5);

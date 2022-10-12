@@ -5,7 +5,6 @@ import RegisterStep3 from './register-step-3';
 import RegisterStep4 from './register-step-4';
 import RegisterStep5 from './register-step-5';
 import RegisterStep6 from './register-step-6';
-import RegisterStep7 from './register-step-7';
 
 const RegisterSteps = ({ step, next, previous, cancel }) => {
   switch (step) {
@@ -40,13 +39,6 @@ const RegisterSteps = ({ step, next, previous, cancel }) => {
     case 5:
       return (
         <RegisterStep6
-          nextStep={() => next()}
-          previousStep={() => previous()}
-        />
-      );
-    case 6:
-      return (
-        <RegisterStep7
           nextStep={() => next()}
           previousStep={() => previous()}
         />
