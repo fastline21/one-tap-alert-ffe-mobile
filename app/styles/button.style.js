@@ -4,5 +4,7 @@ export default StyleSheet.create({
   inner: {
     color: '#ffde59',
   },
-  outer: {},
+  outer: {
+    margin: 12,
+  },
 });

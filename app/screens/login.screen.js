@@ -26,13 +26,14 @@ import LoadingComponent from '../components/loading.component';
 import {
   inputStyle,
   logoStyle,
-  buttonStyle,
+  // buttonStyle,
   titleStyle,
   textStyle,
 } from '../styles';
+import buttonStyle from '../styles/button.style';
 
 // Utilities
-import { getToken } from '../utilities/token';
+import { checkAuth } from '../utilities/auth';
 
 const LoginScreen = ({
   navigation,
@@ -61,23 +62,14 @@ const LoginScreen = ({
       alert('Please fill in all the required fields');
       return;
     }
+
     loginUser(formData);
-
-    // Reset form data
     setFormData(initialFormData);
-  };
-
-  const checkAuthToken = async () => {
-    const authToken = await getToken('auth_token');
-
-    if (authToken) {
-      await authUser();
-    }
   };
 
   // First run
   useEffect(() => {
-    checkAuthToken();
+    checkAuth();
   }, []);
 
   useEffect(() => {
@@ -172,47 +164,3 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, { loginUser, authUser })(LoginScreen);
-
-// export default ({ navigation }) => {
-//   const handleSubmit = async () => {
-//     const { token } = await loginUser(formData);
-//     storeToken('token', token);
-
-//     const auth = await authUser();
-
-//     if (auth.user_type === 'Resident') {
-//       navigation.navigate('Resident');
-//     } else if (auth.user_type === 'Responder') {
-//       navigation.navigate('Responder');
-//     } else {
-//       alert('Unauthorized user');
-//       removeToken('token');
-//     }
-
-//     setFormData(initialFormData);
-//   };
-
-//   const handleRegister = () => {
-//     navigation.navigate('Register');
-//   };
-
-//   getToken('token')
-//     .then(async (data) => {
-//       if (data) {
-//         const auth = await authUser();
-
-//         if (auth.user_type === 'Resident') {
-//           return navigation.navigate('Resident');
-//         }
-
-//         if (auth.user_type === 'Responder') {
-//           return navigation.navigate('Responder');
-//         }
-//       }
-//     })
-//     .catch((error) => console.error('Error: getToken - Catch', { error }));
-
-//   return (
-
-//   );
-// };

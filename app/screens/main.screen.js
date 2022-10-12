@@ -19,10 +19,10 @@ const MainScreen = ({ isAuth = false, children, getAllEmergencyTypes }) => {
 
   return (
     <SafeAreaView style={containerStyle}>
-      <ImageBackground
+      {!isAuth && <ImageBackground
         source={require('../assets/background.png')}
         style={imageBackgroundStyle}
-      />
+      />}
       <KeyboardAwareScrollView
         keyboardOpeningTime={0}
         extraScrollHeight={150}
