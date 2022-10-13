@@ -1,5 +1,3 @@
-import { Camera, CameraType } from 'expo-camera';
-import { useState } from 'react';
 import {
   View,
   Text,
@@ -9,27 +7,33 @@ import {
   Platform,
   Dimensions,
   Image,
-  ImageBackground,
 } from 'react-native';
+import { Camera, CameraType } from 'expo-camera';
+import { useState, useEffect } from 'react';
 import { Avatar } from 'react-native-paper';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+// Screens
+import MainScreen from './main.screen';
 
 // Constants
 import { RATIOS } from '../constants/ratios';
 
-// Styles
-import viewMapStyle from '../styles/view-map.style';
-import viewMapButtonStyle from '../styles/view-map-button.style';
+// Actions
+import { storeEmergency } from '../redux/actions/emergency.action';
 
-const CameraView = ({
-  cameraType = 'back',
-  cameraHeight = 200,
-  capturedImage,
+const CameraScreen = ({
+  route,
+  navigation,
+  emergencyState: { emergency },
+  storeEmergency,
 }) => {
   const initialRatio = RATIOS.DEFAULT;
 
   const [camera, setCamera] = useState(null);
   const [ratio, setRatio] = useState(initialRatio);
-  const [type, setType] = useState(CameraType[cameraType]);
+  const [type, setType] = useState(CameraType.back);
   const [imageURI, setImageURI] = useState(null);
   const [imagePadding, setImagePadding] = useState(0);
   const { height, width } = Dimensions.get('window');
@@ -104,37 +108,17 @@ const CameraView = ({
 
   const handleCapturePicture = async () => {
     const data = await camera.takePictureAsync();
-    capturedImage(data.uri);
-    setImageURI(data.uri);
+    storeEmergency({ imageURI: data.uri });
+    navigation.navigate('ViewCaptureImage');
   };
 
-  const handleSubmit = () => {
-    capturedImage(imageURI);
-  };
-
-  const handleCancel = () => {
-    setImageURI(null);
+  const handleClose = () => {
+    navigation.goBack();
   };
 
   return (
-    <View style={{ height: Dimensions.get('window').height - cameraHeight }}>
-      {imageURI ? (
-        <>
-          <ImageBackground
-            source={{ uri: imageURI }}
-            style={viewMapStyle.inner}
-            resizeMode="stretch"
-          />
-          <View style={viewMapButtonStyle.outer}>
-            <TouchableOpacity onPress={handleSubmit}>
-              <Avatar.Icon icon="check" style={viewMapButtonStyle.inner} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleCancel}>
-              <Avatar.Icon icon="close" style={viewMapButtonStyle.inner} />
-            </TouchableOpacity>
-          </View>
-        </>
-      ) : (
+    <MainScreen>
+      <View style={{ height: Dimensions.get('window').height }}>
         <Camera
           style={styles.camera}
           type={type}
@@ -151,6 +135,12 @@ const CameraView = ({
               margin: 64,
             }}
           >
+            <TouchableOpacity onPress={handleClose}>
+              <Avatar.Icon
+                icon="close"
+                style={{ backgroundColor: 'transparent' }}
+              />
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={async () => await handleCapturePicture()}
             >
@@ -159,14 +149,35 @@ const CameraView = ({
                 style={{ backgroundColor: 'transparent' }}
               />
             </TouchableOpacity>
+            <TouchableOpacity onPress={handleToggleCameraType}>
+              <Avatar.Icon
+                icon="camera-party-mode"
+                style={{ backgroundColor: 'transparent' }}
+              />
+            </TouchableOpacity>
           </View>
         </Camera>
-      )}
-    </View>
+      </View>
+    </MainScreen>
   );
 };
 
-export default CameraView;
+CameraScreen.propTypes = {
+  userState: PropTypes.object.isRequired,
+  authState: PropTypes.object.isRequired,
+  emergencyState: PropTypes.object.isRequired,
+  emergencyTypesState: PropTypes.object.isRequired,
+  storeEmergency: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  userState: state.userState,
+  authState: state.authState,
+  emergencyState: state.emergencyState,
+  emergencyTypesState: state.emergencyTypesState,
+});
+
+export default connect(mapStateToProps, { storeEmergency })(CameraScreen);
 
 const styles = StyleSheet.create({
   container: {

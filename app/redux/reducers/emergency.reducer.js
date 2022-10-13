@@ -6,6 +6,7 @@ import {
   EMERGENCIES_CLEAR_RESPONSE,
   STORE_EMERGENCY,
   GET_ALL_EMERGENCIES,
+  CLEAR_EMERGENCY,
 } from '../types/emergencies.type';
 
 const initialState = {
@@ -25,6 +26,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+        emergency: action.payload.data.emergency,
       };
     case EMERGENCIES_LOADING:
       return {
@@ -34,8 +36,8 @@ export default (state = initialState, action) => {
     case EMERGENCIES_SUCCESS:
       return {
         ...state,
-        success: action.payload.data.success,
-        message: action.payload.data.message,
+        success: action.payload.success,
+        message: action.payload.message,
         loading: false,
       };
     case EMERGENCIES_ERROR:
@@ -54,27 +56,24 @@ export default (state = initialState, action) => {
         message: null,
       };
     case STORE_EMERGENCY:
-      const { payload } = action;
-
       return {
         ...state,
         loading: false,
-        emergency: { ...state.emergency, ...payload },
+        emergency: { ...state.emergency, ...action.payload },
       };
     case GET_ALL_EMERGENCIES:
-      console.log(action.payload);
-      const {
-        data: { emergencies },
-        message,
-        success,
-      } = action.payload;
-
       return {
         ...state,
-        emergencies,
-        message,
-        success,
+        emergencies: action.payload.data.emergencies,
+        message: action.payload.message,
+        success: action.payload.success,
         loading: false,
+      };
+    case CLEAR_EMERGENCY:
+      return {
+        ...state,
+        loading: false,
+        emergency: null,
       };
     default:
       return state;

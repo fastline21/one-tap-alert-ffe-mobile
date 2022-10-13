@@ -25,9 +25,9 @@ const App = () => {
     <Provider store={configureStore}>
       <NavigationContainer>
         <Stack.Navigator
-        // screenOptions={{
-        //   headerShown: false,
-        // }}
+          screenOptions={{
+            headerShown: false,
+          }}
         >
           {/* <Stack.Screen name="Test" component={TestScreen} /> */}
           {/* <Stack.Screen name="Test1" component={Test1Screen} /> */}

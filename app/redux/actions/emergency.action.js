@@ -9,6 +9,7 @@ import {
   EMERGENCIES_LOADING,
   STORE_EMERGENCY,
   GET_ALL_EMERGENCIES,
+  CLEAR_EMERGENCY,
 } from '../types/emergencies.type';
 
 // ENV
@@ -38,6 +39,10 @@ export const submitEmergency = (data) => async (dispatch) => {
 
     const res = await axios.post(`${APP_SERVER_URL}/emergencies`, data, config);
 
+    dispatch({
+      type: SUBMIT_EMERGENCY,
+      payload: res.data,
+    });
     dispatch({
       type: EMERGENCIES_SUCCESS,
       payload: res.data,
@@ -91,6 +96,11 @@ export const emergenciesClearResponse = () => (dispatch) => {
   });
 };
 
+/**
+ * Get all emergencies
+ *
+ * @returns
+ */
 export const getAllEmergencies = () => async (dispatch) => {
   setLoading()(dispatch);
 
@@ -122,4 +132,10 @@ export const getAllEmergencies = () => async (dispatch) => {
       },
     });
   }
+};
+
+export const clearEmergency = () => async (dispatch) => {
+  dispatch({
+    type: CLEAR_EMERGENCY,
+  });
 };

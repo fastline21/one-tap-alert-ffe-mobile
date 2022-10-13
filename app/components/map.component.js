@@ -18,7 +18,7 @@ import { COORDINATES } from '../constants/coordinates';
 
 const Map = ({
   height,
-  locationState: { location, error, loading: locationLoading },
+  locationState: { location, error },
   getCurrentLocation,
 }) => {
   const initialCurrentLocation = {
@@ -46,10 +46,6 @@ const Map = ({
       alert(error);
     }
   }, [location, error]);
-
-  if (locationLoading) {
-    return <Loading />;
-  }
 
   return (
     <View style={mapStyle.outer}>

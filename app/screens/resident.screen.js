@@ -1,4 +1,11 @@
-import { View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -16,6 +23,7 @@ import {
   storeEmergency,
   submitEmergency,
   emergenciesClearResponse,
+  clearEmergency,
 } from '../redux/actions/emergency.action';
 
 // Utilities
@@ -38,11 +46,12 @@ const ResidentScreen = ({
     success: emergencySuccess,
     error: emergencyError,
   },
-  locationState: { location },
+  locationState: { location, loading: locationLoading },
   getUserInfo,
   storeEmergency,
   submitEmergency,
   emergenciesClearResponse,
+  clearEmergency,
 }) => {
   const [active, setActive] = useState('');
 
@@ -58,19 +67,40 @@ const ResidentScreen = ({
       latitude,
       longitude,
     });
-    // storeEmergency({ emergencyTypeID });
-    // navigation.navigate('Camera');
+    storeEmergency({ emergencyTypeID });
+  };
+
+  const handleCamera = () => {
+    navigation.navigate('Camera');
+  };
+
+  const handleClearEmergency = () => {
+    clearEmergency();
   };
 
   useEffect(() => {
-    if (userInfo) {
-      navigation.setOptions({
-        title: `${userInfo?.first_name} ${userInfo?.last_name}`,
-      });
-    }
+    // if (userInfo) {
+    //   navigation.setOptions({
+    //     title: `${userInfo?.first_name} ${userInfo?.last_name}`,
+    //   });
+    // }
 
     if (emergencySuccess) {
-      alert(emergencyMessage);
+      Alert.alert(
+        'Success',
+        `${emergencyMessage}. Do you want to capture a proof?`,
+        [
+          {
+            text: 'Yes',
+            onPress: () => handleCamera(),
+          },
+          {
+            text: 'No',
+            style: 'cancel',
+            onPress: () => handleClearEmergency(),
+          },
+        ]
+      );
       emergenciesClearResponse();
     }
 
@@ -103,6 +133,9 @@ const ResidentScreen = ({
           Logout
         </Button>
       </View>
+      <View>
+        <Text>{JSON.stringify(emergency)}</Text>
+      </View>
     </MainScreen>
   );
 };
@@ -116,6 +149,7 @@ ResidentScreen.propTypes = {
   storeEmergency: PropTypes.func.isRequired,
   submitEmergency: PropTypes.func.isRequired,
   emergenciesClearResponse: PropTypes.func.isRequired,
+  clearEmergency: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -131,4 +165,5 @@ export default connect(mapStateToProps, {
   storeEmergency,
   submitEmergency,
   emergenciesClearResponse,
+  clearEmergency,
 })(ResidentScreen);

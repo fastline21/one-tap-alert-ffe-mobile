@@ -3,43 +3,24 @@ import { useState, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-// Unused vars
-import {
-  logoImageStyle,
-  inputTextStyle,
-  hyperLinkStyle,
-  // titleStyle,
-  titleTextStyle,
-  registerStyle,
-} from '../styles';
-
 // Screens
 import MainScreen from './main.screen';
 
 // Actions
-import { loginUser, authUser } from '../redux/actions/auth.action';
+import { loginUser } from '../redux/actions/auth.action';
 
 // Components
 import LoadingComponent from '../components/loading.component';
 
 // Styles
-import {
-  inputStyle,
-  logoStyle,
-  // buttonStyle,
-  titleStyle,
-  textStyle,
-} from '../styles';
+import { inputStyle, logoStyle, titleStyle, textStyle } from '../styles';
 import buttonStyle from '../styles/button.style';
-
-// Utilities
-import { checkAuth } from '../utilities/auth';
+import hyperLinkStyle from '../styles/hyper-link.style';
 
 const LoginScreen = ({
   navigation,
   authState: { user, loading, error },
   loginUser,
-  authUser,
 }) => {
   const usernameRef = useRef();
   const passwordRef = useRef();
@@ -66,11 +47,6 @@ const LoginScreen = ({
     loginUser(formData);
     setFormData(initialFormData);
   };
-
-  // First run
-  useEffect(() => {
-    checkAuth();
-  }, []);
 
   useEffect(() => {
     if (user) {
@@ -144,7 +120,7 @@ const LoginScreen = ({
       <View style={[textStyle.outer, { marginTop: 20 }]}>
         <Text>
           You don't have any account?{' '}
-          <Text style={hyperLinkStyle} onPress={() => handleRegister()}>
+          <Text style={hyperLinkStyle.inner} onPress={() => handleRegister()}>
             Register
           </Text>
         </Text>
@@ -156,11 +132,10 @@ const LoginScreen = ({
 LoginScreen.propTypes = {
   authState: PropTypes.object.isRequired,
   loginUser: PropTypes.func.isRequired,
-  authUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   authState: state.authState,
 });
 
-export default connect(mapStateToProps, { loginUser, authUser })(LoginScreen);
+export default connect(mapStateToProps, { loginUser })(LoginScreen);

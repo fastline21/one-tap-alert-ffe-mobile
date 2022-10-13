@@ -1,6 +1,7 @@
 import { SafeAreaView, Image } from 'react-native';
 
 import { containerStyle, logoStyle } from '../styles';
+import imageBackgroundStyle from '../styles/imageBackground.style';
 
 const Loading = () => {
   return (

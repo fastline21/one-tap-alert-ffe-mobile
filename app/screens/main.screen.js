@@ -9,8 +9,14 @@ import { containerStyle, imageBackgroundStyle } from '../styles';
 
 // Actions
 import { getAllEmergencyTypes } from '../redux/actions/emergency-types.action';
+import { authUser } from '../redux/actions/auth.action';
 
-const MainScreen = ({ isAuth = false, children, getAllEmergencyTypes }) => {
+const MainScreen = ({
+  isAuth = false,
+  children,
+  getAllEmergencyTypes,
+  authUser,
+}) => {
   const [contentBottom, setContentBottom] = useState(0);
 
   useEffect(() => {
@@ -19,10 +25,12 @@ const MainScreen = ({ isAuth = false, children, getAllEmergencyTypes }) => {
 
   return (
     <SafeAreaView style={containerStyle}>
-      {!isAuth && <ImageBackground
-        source={require('../assets/background.png')}
-        style={imageBackgroundStyle}
-      />}
+      {!isAuth && (
+        <ImageBackground
+          source={require('../assets/background.png')}
+          style={imageBackgroundStyle}
+        />
+      )}
       <KeyboardAwareScrollView
         keyboardOpeningTime={0}
         extraScrollHeight={150}
@@ -40,6 +48,7 @@ const MainScreen = ({ isAuth = false, children, getAllEmergencyTypes }) => {
 
 MainScreen.propTypes = {
   getAllEmergencyTypes: PropTypes.func.isRequired,
+  authUser: PropTypes.func.isRequired,
 };
 
-export default connect(null, { getAllEmergencyTypes })(MainScreen);
+export default connect(null, { getAllEmergencyTypes, authUser })(MainScreen);
