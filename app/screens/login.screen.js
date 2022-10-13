@@ -53,6 +53,10 @@ const LoginScreen = ({
     setFormData(initialFormData);
   };
 
+  const handleRegister = () => {
+    navigation.navigate('Register');
+  };
+
   useEffect(() => {
     if (user) {
       if (user.user_type === 'Resident') {
