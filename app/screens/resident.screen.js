@@ -57,7 +57,7 @@ const ResidentScreen = ({
 
   // First run
   useEffect(() => {
-    getUserInfo(route.params.userID);
+    getUserInfo(user.user_id);
   }, []);
 
   const handleDisaster = (emergencyTypeID) => {
@@ -79,11 +79,11 @@ const ResidentScreen = ({
   };
 
   useEffect(() => {
-    // if (userInfo) {
-    //   navigation.setOptions({
-    //     title: `${userInfo?.first_name} ${userInfo?.last_name}`,
-    //   });
-    // }
+    if (userInfo) {
+      navigation.setOptions({
+        title: `${userInfo?.first_name} ${userInfo?.last_name}`,
+      });
+    }
 
     if (emergencySuccess) {
       Alert.alert(
@@ -132,9 +132,6 @@ const ResidentScreen = ({
         >
           Logout
         </Button>
-      </View>
-      <View>
-        <Text>{JSON.stringify(emergency)}</Text>
       </View>
     </MainScreen>
   );

@@ -104,7 +104,6 @@ const CameraView = ({
 
   const handleCapturePicture = async () => {
     const data = await camera.takePictureAsync();
-    capturedImage(data.uri);
     setImageURI(data.uri);
   };
 

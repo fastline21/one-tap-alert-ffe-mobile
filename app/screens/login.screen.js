@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import MainScreen from './main.screen';
 
 // Actions
-import { loginUser } from '../redux/actions/auth.action';
+import { loginUser, authUser } from '../redux/actions/auth.action';
 
 // Components
 import LoadingComponent from '../components/loading.component';
@@ -21,7 +21,12 @@ const LoginScreen = ({
   navigation,
   authState: { user, loading, error },
   loginUser,
+  authUser,
 }) => {
+  useEffect(() => {
+    authUser();
+  }, []);
+
   const usernameRef = useRef();
   const passwordRef = useRef();
 
@@ -132,10 +137,11 @@ const LoginScreen = ({
 LoginScreen.propTypes = {
   authState: PropTypes.object.isRequired,
   loginUser: PropTypes.func.isRequired,
+  authUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   authState: state.authState,
 });
 
-export default connect(mapStateToProps, { loginUser })(LoginScreen);
+export default connect(mapStateToProps, { loginUser, authUser })(LoginScreen);

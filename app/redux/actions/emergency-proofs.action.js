@@ -3,12 +3,18 @@ import axios from 'axios';
 // ENV
 import { APP_SERVER_URL, APP_SERVER_API_KEY } from '@env';
 
-import { CREATE_EMERGENCY_PROOFS } from '../types/emergency-proofs.type';
+import {
+  EMERGENCY_PROOFS_SUCCESS,
+  EMERGENCY_PROOFS_LOADING,
+  EMERGENCY_PROOFS_CLEAR_RESPONSE,
+} from '../types/emergency-proofs.type';
 
 // Utilities
 import { setToken } from '../../utilities/token';
 
 export const createEmergencyProofs = (data) => async (dispatch) => {
+  setLoading()(dispatch);
+
   try {
     await setToken('auth_token');
 
@@ -25,11 +31,23 @@ export const createEmergencyProofs = (data) => async (dispatch) => {
       config
     );
 
-    // dispatch({
-    //   type: CREATE_EMERGENCY_PROOFS,
-    //   payload: res.data,
-    // });
+    dispatch({
+      type: EMERGENCY_PROOFS_SUCCESS,
+      payload: res.data,
+    });
   } catch (error) {
-    console.error(error);
+    console.error('createEmergencyProofs', error);
   }
+};
+
+const setLoading = () => (dispatch) => {
+  dispatch({
+    type: EMERGENCY_PROOFS_LOADING,
+  });
+};
+
+export const emergencyProofsClearResponse = () => (dispatch) => {
+  dispatch({
+    type: EMERGENCY_PROOFS_CLEAR_RESPONSE,
+  });
 };
