@@ -9,20 +9,19 @@ import CameraView from '../camera.component';
 // Actions
 import { registerStep } from '../../redux/actions/register.action';
 
-const RegisterStep4 = ({ nextStep, previousStep, registerStep }) => {
+const RegisterStep5 = ({ nextStep, previousStep, registerStep }) => {
   const handlePrevious = () => {
     previousStep();
   };
 
-  const handleNext = () => {
+  const handleNext = (data) => {
+    registerStep({ captured_image_front: data });
     nextStep();
   };
 
   return (
     <>
-      <CameraView
-        capturedImage={(data) => registerStep({ captured_image_back: data })}
-      />
+      <CameraView capturedImage={(data) => handleNext(data)} />
       <View
         style={{
           lex: 1,
@@ -31,15 +30,15 @@ const RegisterStep4 = ({ nextStep, previousStep, registerStep }) => {
           justifyContent: 'center',
         }}
       >
-        <Button onPress={handlePrevious}>Previous</Button>
-        <Button onPress={handleNext}>Next</Button>
+        {/* <Button onPress={handlePrevious}>Previous</Button>
+        <Button onPress={handleNext}>Next</Button> */}
       </View>
     </>
   );
 };
 
-RegisterStep4.propTypes = {
+RegisterStep5.propTypes = {
   registerStep: PropTypes.func.isRequired,
 };
 
-export default connect(null, { registerStep })(RegisterStep4);
+export default connect(null, { registerStep })(RegisterStep5);

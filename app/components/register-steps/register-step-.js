@@ -9,7 +9,7 @@ import CameraView from '../camera.component';
 // Actions
 import { registerStep } from '../../redux/actions/register.action';
 
-const RegisterStep5 = ({ nextStep, previousStep, registerStep }) => {
+const RegisterStep4 = ({ nextStep, previousStep, registerStep }) => {
   const handlePrevious = () => {
     previousStep();
   };
@@ -37,8 +37,8 @@ const RegisterStep5 = ({ nextStep, previousStep, registerStep }) => {
   );
 };
 
-RegisterStep5.propTypes = {
+RegisterStep4.propTypes = {
   registerStep: PropTypes.func.isRequired,
 };
 
-export default connect(null, { registerStep })(RegisterStep5);
+export default connect(null, { registerStep })(RegisterStep4);

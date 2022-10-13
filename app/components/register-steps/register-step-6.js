@@ -1,58 +1,30 @@
-import { Text, View, Image } from 'react-native';
-import { Button, Card } from 'react-native-paper';
+import { View } from 'react-native';
+import { Button } from 'react-native-paper';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+
+// Components
+import CameraView from '../camera.component';
 
 // Actions
 import { registerStep } from '../../redux/actions/register.action';
 
-import titleStyle from '../../styles/title.style';
-
-const RegisterStep6 = ({ previousStep, registerState: { register } }) => {
+const RegisterStep5 = ({ nextStep, previousStep, registerStep }) => {
   const handlePrevious = () => {
     previousStep();
   };
 
-  const handleSubmit = () => {
+  const handleNext = (data) => {
+    registerStep({ captured_image_selfie: data });
     nextStep();
   };
 
   return (
     <>
-      <Text>{JSON.stringify(register)}</Text>
-      <View style={titleStyle.outer}>
-        <Text style={titleStyle.inner}>Personal Information:</Text>
-      </View>
-      <View style={titleStyle.outer}>
-        <Text>
-          Name: {register.firstName} {register.middleInitial}{' '}
-          {register.lastName}
-        </Text>
-      </View>
-      <View style={titleStyle.outer}>
-        <Text>Address: {register.address}</Text>
-      </View>
-      <View style={titleStyle.outer}>
-        <Text>Postal Code: {register.postalCode}</Text>
-      </View>
-      <View style={titleStyle.outer}>
-        <Text>
-          Back ID:{' '}
-          <Image
-            source={{ uri: register.captured_image_back }}
-            style={{ width: 100, height: 100 }}
-          />
-        </Text>
-      </View>
-      <View style={titleStyle.outer}>
-        <Text>
-          Selfie ID:{' '}
-          <Image
-            source={{ uri: register.captured_image_front }}
-            style={{ width: 100, height: 100 }}
-          />
-        </Text>
-      </View>
+      <CameraView
+        cameraType="front"
+        capturedImage={(data) => handleNext(data)}
+      />
       <View
         style={{
           lex: 1,
@@ -61,19 +33,15 @@ const RegisterStep6 = ({ previousStep, registerState: { register } }) => {
           justifyContent: 'center',
         }}
       >
-        <Button onPress={handlePrevious}>Previous</Button>
-        <Button onPress={handleSubmit}>Submit</Button>
+        {/* <Button onPress={handlePrevious}>Previous</Button>
+        <Button onPress={handleNext}>Next</Button> */}
       </View>
     </>
   );
 };
 
-RegisterStep6.propTypes = {
+RegisterStep5.propTypes = {
   registerStep: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  registerState: state.registerState,
-});
-
-export default connect(mapStateToProps, { registerStep })(RegisterStep6);
+export default connect(null, { registerStep })(RegisterStep5);

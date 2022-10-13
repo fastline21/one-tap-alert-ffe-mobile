@@ -14,6 +14,7 @@ const RegisterScreen = ({ navigation }) => {
     'Personal Information',
     'Contact Information',
     'Contact Person',
+    'Front ID',
     'Back ID',
     'Selfie ID',
     'Review',
@@ -62,7 +63,7 @@ const RegisterScreen = ({ navigation }) => {
           customStyles={customStyles}
           currentPosition={currentPosition}
           labels={labels}
-          stepCount={6}
+          stepCount={7}
         />
       </View>
       <View>

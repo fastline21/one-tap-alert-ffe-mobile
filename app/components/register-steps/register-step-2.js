@@ -2,15 +2,22 @@ import { View, TextInput } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button } from 'react-native-paper';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 // Styles
 import inputStyle from '../../styles/input.style';
 
 // Actions
 import { registerStep } from '../../redux/actions/register.action';
+import { getAllBarangays } from '../../redux/actions/barangays.action';
 
-const RegisterStep2 = ({ nextStep, previousStep, registerStep }) => {
+const RegisterStep2 = ({
+  nextStep,
+  previousStep,
+  barangaysState: { barangays },
+  registerStep,
+  getAllBarangays,
+}) => {
   const initialFormInput = {
     contactNo: '',
     address: '',
@@ -18,6 +25,10 @@ const RegisterStep2 = ({ nextStep, previousStep, registerStep }) => {
     city: '',
     postalCode: '',
   };
+
+  // useEffect(() => {
+  //   getAllBarangays();
+  // }, []);
 
   const [formInput, setFormInput] = useState(initialFormInput);
 
@@ -42,8 +53,12 @@ const RegisterStep2 = ({ nextStep, previousStep, registerStep }) => {
   const handleChangeInput = (name, value) => {
     setFormInput({ ...formInput, [name]: value });
   };
+
   return (
     <>
+      <View>
+        <Text>{JSON.stringify(barangays)}</Text>
+      </View>
       <View style={inputStyle.outer}>
         <TextInput
           placeholder="Contact No."
@@ -125,11 +140,16 @@ const RegisterStep2 = ({ nextStep, previousStep, registerStep }) => {
 
 RegisterStep2.propTypes = {
   registerState: PropTypes.object.isRequired,
+  barangaysState: PropTypes.object.isRequired,
   registerStep: PropTypes.func.isRequired,
+  getAllBarangays: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   registerState: state.registerState,
+  barangaysState: state.barangaysState,
 });
 
-export default connect(mapStateToProps, { registerStep })(RegisterStep2);
+export default connect(mapStateToProps, { registerStep, getAllBarangays })(
+  RegisterStep2
+);

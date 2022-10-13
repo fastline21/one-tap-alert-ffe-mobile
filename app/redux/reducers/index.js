@@ -8,6 +8,7 @@ import emergencyTypesReducer from './emergency-types.reducer';
 import locationReducer from './location.reducer';
 import registerReducer from './register.reducer';
 import emergencyProofsReducer from './emergency-proofs.reducer';
+import barangaysReducer from './barangays.reducer';
 
 export default combineReducers({
   authState: authReducer,
@@ -17,4 +18,5 @@ export default combineReducers({
   locationState: locationReducer,
   registerState: registerReducer,
   emergencyProofsState: emergencyProofsReducer,
+  banagaysState: barangaysReducer,
 });
